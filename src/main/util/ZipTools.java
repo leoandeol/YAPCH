@@ -4,14 +4,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class ZipTools {
 
-    public static void UnZip(String inputFile, String outputDirectory) {
-        //todo test if file exists
+    public static void UnZip(String inputFile){
+        String folder = inputFile.replaceAll(".zip", "");
+        UnZip(inputFile, folder);
+    }
 
+    public static void UnZip(String inputFile, String outputDirectory) {
         byte[] buffer = new byte[1024];
 
         try {
