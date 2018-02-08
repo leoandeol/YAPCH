@@ -53,4 +53,35 @@ public class Test {
         }
     }
 
+    public void checkProjects(){
+        for(Project p : project_list){
+            //revoir l'architecture des projects
+        }
+    }
+
+    public void compileProjects(){
+        for(Project p : project_list){
+            try {
+                Runtime.getRuntime().exec("cd "+p.getName()+" && find -name *.java | xargs javac && cd ..").waitFor();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void compileJavadoc(){
+        for(Project p : project_list){
+            try {
+                Runtime.getRuntime().exec("cd "+p.getName()+" && find -name *.java | xargs java -d && cd ..").waitFor();
+                //test existance du dossier docs ? et rempli ?
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }
