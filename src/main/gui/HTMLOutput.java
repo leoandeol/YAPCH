@@ -12,19 +12,7 @@ import java.util.logging.Logger;
 
 
 public class HTMLOutput {
-    /**
-     calculate the number of percentages of the tests
-     */
-    static double percentageOK(int i,int h){
-        double f=(i/(h*4)) * 100;
-        return f;
-    }
-    static double percentageKO(int j,int h){
-        return (j/(h*4)) * 100;
-    }
-
     public static void render(List<Project> projects) throws IOException {
-        int i = 0, j = 0, h = 0;
         StringBuilder html = new StringBuilder();
         html.append("\n" +
                 "<!DOCTYPE html>\n" +
@@ -84,8 +72,8 @@ public class HTMLOutput {
                 "#customers td, #customers th {"+
                 "border: 1px solid #ddd;"+
                 "padding: 8px;}\n"+
-                "#customers tr:nth-child(even){background-color: #f2f2f2;}"+
-                "#customers tr:hover {background-color: #ddd;}"+
+                "#customers tr:nth-child(even){background-color: white;}"+
+                "#customers tr {background-color: white;}"+
                 "#customers th {"+
                 "padding-top: 12px;"+
                  "padding-bottom: 12px;"+
@@ -113,41 +101,44 @@ public class HTMLOutput {
                     "        <th>unit Testes </th>\n" +
                     "    </tr>");
             for (Project e : projects) {
-            h++;
             html.append("<tr><td>" + e.getName()+"</td>\n");
             if (e.isCorrect()) {
-                i++;
                 html.append("<td>&#x2705");
             } else if (!e.isCorrect()) {
                 html.append("<td>&#10060");
-                j++;
             } else html.append("<td>&#x2753");
             html.append("</td>");
             if (e.isCompiles()) {
                 html.append("<td>&#x2705");
-                i++;
             } else if (!e.isCompiles()) {
                 html.append("<td>&#10060");
-                j++;
             } else html.append("<td>&#x2753");
             html.append("</td>");
             if (e.getMethodTested() == Project.State.WORKING) {
                 html.append("<td>&#x2705");
-                i++;
             } else if (e.getMethodTested() == Project.State.BROKEN) {
                 html.append("<td>&#10060");
-                j++;
             } else if (e.getMethodTested() == Project.State.UNKNOWN) html.append("<td>&#x2753");
             html.append("</td>");
-            if (e.getJavadocTested() == Project.State.AVAILABLE && e.getJavadocTested() == Project.State.WORKING) {
+            if (e.getJavadocTested() == Project.State.WORKING) {
                 html.append("<td>&#x2705");
-                i++;
-            } else if (e.getJavadocTested() == Project.State.BROKEN && e.getJavadocTested() == Project.State.AVAILABLE) {
+            } else if (e.getJavadocTested() == Project.State.BROKEN) {
                 html.append("<td>&#10060");
-                j++;
             } else if (e.getJavadocTested() == Project.State.NOTAVAILABLE) html.append("<td>&#x2753");
-            html.append("</td>\n" +
-                    " </tr>");
+            html.append("</td>");
+            if (0<=e.getUnitTested() && e.getUnitTested()<=12) {
+            html.append("<td><span style=\"color: red;\">"+e.getUnitTested()+"%");
+            } else if (90<=e.getUnitTested() && e.getUnitTested()<=100) {
+            html.append("<td ><span style=\"color: #7CFC00;\">"+e.getUnitTested()+"%");
+            } else if ((50<=e.getUnitTested() && e.getUnitTested()<=90)) {
+            html.append("<td ><span style=\"color: #FFFF00;\">" + e.getUnitTested()+"%");
+            } else if ((12<=e.getUnitTested() && e.getUnitTested()<=50)) {
+            html.append("<td ><span style=\"color: #FF8C00;\">"+e.getUnitTested()+"%");}
+            html.append("</td>");
+
+
+            html.append("</tr>");
+
             }
             html.append("</table></div>\n" +
                     "</body>\n" +
@@ -169,15 +160,20 @@ public class HTMLOutput {
                 Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-     public static void  main(String[] arg) throws IOException {
-        Project p=new Project("lamyaa");
-         p.setCompiles(false);
-         p.setCorrect(false);
-         p.setMethodTested(Project.State.WORKING);
-         p.setJavadocTested(Project.State.NOTAVAILABLE);
+     /*public static void  main(String[] arg) throws IOException {
          List<Project> l=new ArrayList<>();
-         l.add(p);
-         render(l);
-     }
+         for(int i=0;i<5;i++) {
+             char h=20;
+             Project p = new Project("lamyaa");
+             p.setCompiles(false);
+             p.setCorrect(false);
+             p.setMethodTested(Project.State.WORKING);
+             p.setJavadocTested(Project.State.WORKING);
+             p.setUnitTested(h);
+             l.add(p);
+         }
+
+         render(l);}*/
+
     }
 
