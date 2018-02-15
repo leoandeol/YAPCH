@@ -5,6 +5,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,10 +15,11 @@ public class HTMLOutput {
     /**
      calculate the number of percentages of the tests
      */
-    static int percentageOK(int i,int h){
-        return (i/(h*4)) * 100;
+    static double percentageOK(int i,int h){
+        double f=(i/(h*4)) * 100;
+        return f;
     }
-    static int percentageKO(int j,int h){
+    static double percentageKO(int j,int h){
         return (j/(h*4)) * 100;
     }
 
@@ -72,35 +74,24 @@ public class HTMLOutput {
                 "    text-align:center;\n" +
                 "    margin-top:159px;\n" +
                 "}\n" +
-                "#left {\n" +
-                "    width:50%;\n" +
-                "\tmargin-left:left;\n" +
-                "}\n" +
-                "#right{\n" +
-                "    width:50%;\n" +
-                "\tmargin-right:right;\n" +
-                "\tmargin-left:auto;\n" +
-                "\tmargin-top:-317px;\n" +
-                "\tmargin-Bottom:auto;\n" +
-                "\n" +
-                "}\n" +
                 "h1, h2{\n" +
                 "color: #191970 ;\n" +
                 "}\n" +
-                "table {\n" +
-                "    border-collapse: collapse;\n" +
-                "    width: 100%;\n" +
-                "\n" +
-                "}\n" +
-                "\n" +
-                "th, td {\n" +
-                "    padding: 8px;\n" +
-                "    text-align: center;\n" +
-                "    border-bottom: 1px solid #ddd;\n" +
-                "}\n" +
-                "\n" +
-                "tr:hover {background-color:#f5f5f5;}\n" +
-                "\n" +
+                "#customers {"+
+                "font-family: Arial, Helvetica, sans-serif;"+
+                "border-collapse: collapse;"+
+                " width: 100%;}"+
+                "#customers td, #customers th {"+
+                "border: 1px solid #ddd;"+
+                "padding: 8px;}\n"+
+                "#customers tr:nth-child(even){background-color: #f2f2f2;}"+
+                "#customers tr:hover {background-color: #ddd;}"+
+                "#customers th {"+
+                "padding-top: 12px;"+
+                 "padding-bottom: 12px;"+
+                 "text-align: left;"+
+                 "background-color: #708090;"+
+                 "color: white;}"+
                 "</style>\n" +
                 "</head>\n" +
                 "<body>\n" +
@@ -112,70 +103,55 @@ public class HTMLOutput {
                 "</div>\n" +
                 "<br><br><br><br><br><br>\n" +
                 "<div id=\"footer\" >\n");
-        for (Project e : projects) {
+            html.append(" <table id=\"customers\">\n" +
+                    "    <tr>\n" +
+                    "        <th>Name Project</th>\n" +
+                    "        <th>Zip Format </th>\n" +
+                    "        <th>the project compiles </th>\n" +
+                    "        <th>the methods are correct </th>\n" +
+                    "        <th>existence of javadoc </th>\n" +
+                    "        <th>unit Testes </th>\n" +
+                    "    </tr>");
+            for (Project e : projects) {
             h++;
-            html.append("<h1> the result of the student " + e.getName() + "are represented in this table");
-
-            /** checking the file format  */
-            html.append(" <table><tr><th>Tests :</th>" +
-                    "<th>Results :</th></tr>" +
-                    "<tr><th> the format of the zip file </th>");
+            html.append("<tr><td>" + e.getName()+"</td>\n");
             if (e.isCorrect()) {
                 i++;
-                html.append("<th>&#x2705");
+                html.append("<td>&#x2705");
             } else if (!e.isCorrect()) {
-                html.append("<th>&#10060");
+                html.append("<td>&#10060");
                 j++;
-            } else html.append("<th>&#x2753");
-            html.append("</th></tr>");
-            /**
-             * Check if the project compiles
-             */
-            html.append("<tr><th> the project compiles </th>");
+            } else html.append("<td>&#x2753");
+            html.append("</td>");
             if (e.isCompiles()) {
-                html.append("<th>&#x2705");
+                html.append("<td>&#x2705");
                 i++;
             } else if (!e.isCompiles()) {
-                html.append("<th>&#10060");
+                html.append("<td>&#10060");
                 j++;
-            } else html.append("<th>&#x2753");
-            html.append("</th></tr>");
-
-            /**check if the methods are correct following the test class given by the teacher*/
-            html.append("<tr><th>the methods are well declare </th>");
+            } else html.append("<td>&#x2753");
+            html.append("</td>");
             if (e.getMethodTested() == Project.State.WORKING) {
-                html.append("<th>&#x2705");
+                html.append("<td>&#x2705");
                 i++;
             } else if (e.getMethodTested() == Project.State.BROKEN) {
-                html.append("<th>&#10060");
+                html.append("<td>&#10060");
                 j++;
-            } else if (e.getMethodTested() == Project.State.UNKNOWN) html.append("<th>&#x2753");
-            html.append("</th></tr>");
-
-            /**checks if there is javadoc in the code and if it's valid*/
-            html.append("<tr><th>the javadoc is in the code and if it's valid</th>");
+            } else if (e.getMethodTested() == Project.State.UNKNOWN) html.append("<td>&#x2753");
+            html.append("</td>");
             if (e.getJavadocTested() == Project.State.AVAILABLE && e.getJavadocTested() == Project.State.WORKING) {
-                html.append("<th>&#x2705");
+                html.append("<td>&#x2705");
                 i++;
             } else if (e.getJavadocTested() == Project.State.BROKEN && e.getJavadocTested() == Project.State.AVAILABLE) {
-                html.append("<th>&#10060");
+                html.append("<td>&#10060");
                 j++;
-            } else if (e.getJavadocTested() == Project.State.NOTAVAILABLE) html.append("<th>&#x2753");
-            html.append("</th>\n" +
+            } else if (e.getJavadocTested() == Project.State.NOTAVAILABLE) html.append("<td>&#x2753");
+            html.append("</td>\n" +
                     " </tr>");
-
-            /** checks if the unit tests run smoothly*/
-
-        }
-            html.append("</table><table><tr><th>percentage of correct answers:</th>" +
-                    "<th>percentage of false answers:</th></tr>" +
-                    "<tr><th>" + percentageOK(i, h) + "</th>" +
-                    "<th>" + percentageKO(j, h) + "</th></tr></table>");
-            html.append("</div>\n" +
+            }
+            html.append("</table></div>\n" +
                     "</body>\n" +
                     "</html>\n");
-
-
             File fich = new File("./monfichier.html");
             FileWriter fw = new FileWriter(fich);
             fw.write(html.toString(), 0, html.length());
@@ -193,5 +169,15 @@ public class HTMLOutput {
                 Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+     public static void  main(String[] arg) throws IOException {
+        Project p=new Project("lamyaa");
+         p.setCompiles(false);
+         p.setCorrect(false);
+         p.setMethodTested(Project.State.WORKING);
+         p.setJavadocTested(Project.State.NOTAVAILABLE);
+         List<Project> l=new ArrayList<>();
+         l.add(p);
+         render(l);
+     }
     }
 
