@@ -5,7 +5,6 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -160,20 +159,5 @@ public class HTMLOutput {
                 Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-     /*public static void  main(String[] arg) throws IOException {
-         List<Project> l=new ArrayList<>();
-         for(int i=0;i<5;i++) {
-             char h=20;
-             Project p = new Project("lamyaa");
-             p.setCompiles(false);
-             p.setCorrect(false);
-             p.setMethodTested(Project.State.WORKING);
-             p.setJavadocTested(Project.State.WORKING);
-             p.setUnitTested(h);
-             l.add(p);
-         }
-
-         render(l);}*/
-
     }
 
