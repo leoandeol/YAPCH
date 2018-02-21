@@ -134,10 +134,7 @@ public class HTMLOutput {
             } else if ((12<=e.getUnitTested() && e.getUnitTested()<=50)) {
             html.append("<td ><span style=\"color: #FF8C00;\">"+e.getUnitTested()+"%");}
             html.append("</td>");
-
-
             html.append("</tr>");
-
             }
             html.append("</table></div>\n" +
                     "</body>\n" +
