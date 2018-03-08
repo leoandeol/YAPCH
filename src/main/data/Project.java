@@ -30,7 +30,7 @@ public class Project {
     /**
      * checks if the unit tests run smoothly
      */
-    private char unitTested;
+    private State unitTested;
     public Project(String name){
         this.name=name;
     }
@@ -43,11 +43,11 @@ public class Project {
         this.compiles = compiles;
     }
 
-    public char getUnitTested() {
+    public State getUnitTested() {
         return unitTested;
     }
 
-    public void setUnitTested(char unitTested) {
+    public void setUnitTested(State unitTested) {
         this.unitTested = unitTested;
     }
 

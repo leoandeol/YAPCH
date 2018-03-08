@@ -1,59 +1,64 @@
 package util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Path;
+import java.io.*;
+import java.util.Enumeration;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.zip.ZipFile;
 
 public class ZipTools {
 
     public static void UnZip(String inputFile){
         String folder = inputFile.replaceAll(".zip", "");
-        UnZip(inputFile, folder);
+        try {
+            UnZip(inputFile, folder);
+        } catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
-    public static void UnZip(String inputFile, String outputDirectory) {
-        byte[] buffer = new byte[1024];
+    public static void UnZip(String inputFile, String outputDirectory) throws IOException {
+        int BUFFER = 2048;
+        File file = new File(inputFile);
 
-        try {
+        ZipFile zip = new ZipFile(file);
+        String newPath = outputDirectory;
 
-            File folder = new File(outputDirectory);
-            if (!folder.exists()) {
-                folder.mkdir();
-            }
+        new File(newPath).mkdir();
+        Enumeration zipFileEntries = zip.entries();
 
-            ZipInputStream zis =
-                    new ZipInputStream(new FileInputStream(inputFile));
+        while (zipFileEntries.hasMoreElements())
+        {
+            ZipEntry entry = (ZipEntry) zipFileEntries.nextElement();
+            String currentEntry = entry.getName();
+            File destFile = new File(newPath, currentEntry);
 
-            ZipEntry ze = zis.getNextEntry();
+            File destinationParent = destFile.getParentFile();
 
-            while (ze != null) {
+            destinationParent.mkdirs();
 
-                String fileName = ze.getName();
-                File newFile = new File(outputDirectory + File.separator + fileName);
+            if (!entry.isDirectory()){
+                BufferedInputStream is = new BufferedInputStream(zip
+                        .getInputStream(entry));
+                int currentByte;
+                // establish buffer for writing file
+                byte data[] = new byte[BUFFER];
 
-                if(!new File(newFile.getParent()).mkdirs())
-                    System.err.println("There was an error");
+                // write the current file to disk
+                FileOutputStream fos = new FileOutputStream(destFile);
+                BufferedOutputStream dest = new BufferedOutputStream(fos,
+                        BUFFER);
 
-                FileOutputStream fos = new FileOutputStream(newFile);
-
-                int len;
-                while ((len = zis.read(buffer)) > 0) {
-                    fos.write(buffer, 0, len);
+                // read and write until last byte is encountered
+                while ((currentByte = is.read(data, 0, BUFFER)) != -1) {
+                    dest.write(data, 0, currentByte);
                 }
-
-                fos.close();
-                ze = zis.getNextEntry();
+                dest.flush();
+                dest.close();
+                is.close();
             }
-
-            zis.closeEntry();
-            zis.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
+            if (currentEntry.endsWith(".zip")){
+                UnZip(destFile.getAbsolutePath());
+            }
         }
     }
 

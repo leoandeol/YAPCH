@@ -20,8 +20,11 @@ import static org.junit.Assert.*;
 
 public class TestTest {
 
+    core.Test t;
+
     @Before
     public void setUp() throws Exception {
+        t = new core.Test();
     }
 
     @After
@@ -54,7 +57,19 @@ public class TestTest {
     public void runAllTests() {
     }
 
+    //fix
     @Test
     public void findProjectsInSubmissions() {
+        try {
+            t.findProjectsInSubmissions();
+            for(Project p : t.getProject_list()){
+                if(p.getName().equals("AsterixObelix")){
+                    return;
+                }
+            }
+        } catch (NotAFolderException e){
+            fail();
+        }
+        fail();
     }
 }

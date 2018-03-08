@@ -2,6 +2,7 @@ package core;
 
 import data.Project;
 import exception.NotAFolderException;
+import util.IOTools;
 import util.ZipTools;
 
 import java.io.IOException;
@@ -15,10 +16,17 @@ import java.util.List;
 
 public class Test {
 
+    public List<Project> getProject_list() {
+        return project_list;
+    }
+
     private List<Project> project_list;
 
-    public List<Project> runAllTests(){
+    public Test(){
         project_list = new ArrayList<>();
+    }
+
+    public List<Project> runAllTests(){
 
         try {
             findProjectsInSubmissions();
@@ -48,7 +56,6 @@ public class Test {
                 ZipTools.UnZip(tmp.toString());
                 String filename = tmp.getFileName().toString().replaceAll(".zip","");
                 project_list.add(new Project(filename));
-                System.out.println("filename");
             }
         }
     }
@@ -76,6 +83,35 @@ public class Test {
             try {
                 Runtime.getRuntime().exec("cd "+p.getName()+" && find -name *.java | xargs java -d && cd ..").waitFor();
                 //test existance du dossier docs ? et rempli ?
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void compileUnitTest(){
+        for(Project p : project_list) {
+            try {
+                String s = IOTools.exec("cd "+p.getName()+" && find -name Test*.java && cd ..");
+                if(s.equals("")){
+                    p.setUnitTested(Project.State.BROKEN);
+                    continue;
+                }
+                Runtime.getRuntime().exec("cd " + p.getName() + " && find -name Test*.java | xargs javac -cp .:junit-4.12.jar:hamcrest-core-1.3.jar && cd ..").waitFor();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void executeUnitTest(){
+        for(Project p : project_list){
+            try {
+                // foreach file we remove .class from the test and execute it
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (IOException e) {
