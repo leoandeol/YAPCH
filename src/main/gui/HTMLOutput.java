@@ -1,4 +1,5 @@
 package gui;
+
 import data.Project;
 
 import java.awt.*;
@@ -64,21 +65,21 @@ public class HTMLOutput {
                 "h1, h2{\n" +
                 "color: #191970 ;\n" +
                 "}\n" +
-                "#customers {"+
-                "font-family: Arial, Helvetica, sans-serif;"+
-                "border-collapse: collapse;"+
-                " width: 100%;}"+
-                "#customers td, #customers th {"+
-                "border: 1px solid #ddd;"+
-                "padding: 8px;}\n"+
-                "#customers tr:nth-child(even){background-color: white;}"+
-                "#customers tr {background-color: white;}"+
-                "#customers th {"+
-                "padding-top: 12px;"+
-                 "padding-bottom: 12px;"+
-                 "text-align: left;"+
-                 "background-color: #708090;"+
-                 "color: white;}"+
+                "#customers {" +
+                "font-family: Arial, Helvetica, sans-serif;" +
+                "border-collapse: collapse;" +
+                " width: 100%;}" +
+                "#customers td, #customers th {" +
+                "border: 1px solid #ddd;" +
+                "padding: 8px;}\n" +
+                "#customers tr:nth-child(even){background-color: white;}" +
+                "#customers tr {background-color: white;}" +
+                "#customers th {" +
+                "padding-top: 12px;" +
+                "padding-bottom: 12px;" +
+                "text-align: left;" +
+                "background-color: #708090;" +
+                "color: white;}" +
                 "</style>\n" +
                 "</head>\n" +
                 "<body>\n" +
@@ -90,71 +91,61 @@ public class HTMLOutput {
                 "</div>\n" +
                 "<br><br><br><br><br><br>\n" +
                 "<div id=\"footer\" >\n");
-            html.append(" <table id=\"customers\">\n" +
-                    "    <tr>\n" +
-                    "        <th>Name Project</th>\n" +
-                    "        <th>Zip Format </th>\n" +
-                    "        <th>the project compiles </th>\n" +
-                    "        <th>the methods are correct </th>\n" +
-                    "        <th>existence of javadoc </th>\n" +
-                    "        <th>unit Testes </th>\n" +
-                    "    </tr>");
-            for (Project e : projects) {
-            html.append("<tr><td>" + e.getName()+"</td>\n");
+        html.append(" <table id=\"customers\">\n" +
+                "    <tr>\n" +
+                "        <th>Project Name</th>\n" +
+                "        <th>Format</th>\n" +
+                "        <th>Compilation</th>\n" +
+                "        <th>Score</th>\n" +
+                "        <th>Javadoc</th>\n" +
+                "        <th>JUnit Tests</th>\n" +
+                "    </tr>");
+        for (Project e : projects) {
+            html.append("<tr><td>" + e.getName() + "</td>\n");
+
             if (e.isCorrect()) {
                 html.append("<td>&#x2705");
             } else if (!e.isCorrect()) {
                 html.append("<td>&#10060");
             } else html.append("<td>&#x2753");
             html.append("</td>");
+
             if (e.isCompiles()) {
                 html.append("<td>&#x2705");
             } else if (!e.isCompiles()) {
                 html.append("<td>&#10060");
             } else html.append("<td>&#x2753");
             html.append("</td>");
-            if (e.getMethodTested() == Project.State.WORKING) {
-                html.append("<td>&#x2705");
-            } else if (e.getMethodTested() == Project.State.BROKEN) {
-                html.append("<td>&#10060");
-            } else if (e.getMethodTested() == Project.State.UNKNOWN) html.append("<td>&#x2753");
+
+            html.append("<td>");
+            html.append(e.getMethodTested());
             html.append("</td>");
+
             if (e.getJavadocTested() == Project.State.WORKING) {
                 html.append("<td>&#x2705");
             } else if (e.getJavadocTested() == Project.State.BROKEN) {
                 html.append("<td>&#10060");
             } else if (e.getJavadocTested() == Project.State.NOTAVAILABLE) html.append("<td>&#x2753");
             html.append("</td>");
-            if (0<=e.getUnitTested() && e.getUnitTested()<=12) {
-            html.append("<td><span style=\"color: red;\">"+e.getUnitTested()+"%");
-            } else if (90<=e.getUnitTested() && e.getUnitTested()<=100) {
-            html.append("<td ><span style=\"color: #7CFC00;\">"+e.getUnitTested()+"%");
-            } else if ((50<=e.getUnitTested() && e.getUnitTested()<=90)) {
-            html.append("<td ><span style=\"color: #FFFF00;\">" + e.getUnitTested()+"%");
-            } else if ((12<=e.getUnitTested() && e.getUnitTested()<=50)) {
-            html.append("<td ><span style=\"color: #FF8C00;\">"+e.getUnitTested()+"%");}
+
+            if (e.getUnitTested() == Project.State.WORKING) {
+                html.append("<td>&#x2705");
+            } else if (e.getUnitTested() == Project.State.BROKEN) {
+                html.append("<td>&#10060");
+            } else if (e.getUnitTested() == Project.State.NOTAVAILABLE) html.append("<td>&#x2753");
+            //html.append("<td ><span style=\"color: #FF8C00;\">" + e.getUnitTested() + "");
             html.append("</td>");
+
             html.append("</tr>");
-            }
-            html.append("</table></div>\n" +
-                    "</body>\n" +
-                    "</html>\n");
-            File fich = new File("./monfichier.html");
-            FileWriter fw = new FileWriter(fich);
-            fw.write(html.toString(), 0, html.length());
-            fw.flush();
-            fw.close();
-            Desktop desktop = null;
-            java.net.URI url;
-            try {
-                url = new java.net.URI("monfichier.html");
-                if (Desktop.isDesktopSupported()) {
-                    desktop = Desktop.getDesktop();
-                    desktop.browse(url);
-                }
-            } catch (Exception ex) {
-                Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
+        html.append("</table></div>\n" +
+                "</body>\n" +
+                "</html>\n");
+        File fich = new File("./sortie.html");
+        FileWriter fw = new FileWriter(fich);
+        fw.write(html.toString(), 0, html.length());
+        fw.flush();
+        fw.close();
     }
+}
 

@@ -2,14 +2,6 @@ package data;
 
 public class Project {
 
-    public enum State {
-        UNKNOWN,
-        AVAILABLE,
-        NOTAVAILABLE,
-        WORKING,
-        BROKEN
-    }
-
     private String name;
     /**
      * Check if the zip is in the correct format
@@ -20,9 +12,9 @@ public class Project {
      */
     private boolean compiles;
     /**
-     * check if the methods are correct following the test class given by the teacher
+     * checks the score according to the test given by the teacher
      */
-    private State methodTested;
+    private String methodTested;
     /**
      * checks if there is javadoc in the code and if it's valid
      */
@@ -31,8 +23,13 @@ public class Project {
      * checks if the unit tests run smoothly
      */
     private State unitTested;
-    public Project(String name){
-        this.name=name;
+    public Project(String name) {
+        this.name = name;
+        this.compiles = false;
+        this.correct = false;
+        this.methodTested = "?";
+        this.javadocTested = State.UNKNOWN;
+        this.unitTested = State.UNKNOWN;
     }
 
     public boolean isCompiles() {
@@ -59,11 +56,11 @@ public class Project {
         this.javadocTested = javadocTested;
     }
 
-    public State getMethodTested() {
+    public String getMethodTested() {
         return methodTested;
     }
 
-    public void setMethodTested(State methodTested) {
+    public void setMethodTested(String methodTested) {
         this.methodTested = methodTested;
     }
 
@@ -77,5 +74,13 @@ public class Project {
 
     public String getName() {
         return name;
+    }
+
+    public enum State {
+        UNKNOWN,
+        AVAILABLE,
+        NOTAVAILABLE,
+        WORKING,
+        BROKEN
     }
 }
