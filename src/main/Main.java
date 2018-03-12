@@ -9,6 +9,7 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args){
+        System.out.println("Yet another project correction helper ?");
         Test test = new Test();
         if(args.length>=1 && args[0].equals("clean")){
             try {

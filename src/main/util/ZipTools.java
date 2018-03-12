@@ -7,6 +7,7 @@ import java.util.zip.ZipFile;
 
 public class ZipTools {
 
+    // function to simplify if we dont want to give an output dir
     public static void UnZip(String inputFile){
         String folder = inputFile.replaceAll(".zip", "");
         try {
@@ -23,41 +24,35 @@ public class ZipTools {
         ZipFile zip = new ZipFile(file);
         String newPath = outputDirectory;
 
-        new File(newPath).mkdir();
+        File f = new File(newPath);
+        f.mkdir();
+
         Enumeration zipFileEntries = zip.entries();
 
         while (zipFileEntries.hasMoreElements())
         {
-            ZipEntry entry = (ZipEntry) zipFileEntries.nextElement();
+            ZipEntry entry = (ZipEntry)zipFileEntries.nextElement();
             String currentEntry = entry.getName();
             File destFile = new File(newPath, currentEntry);
 
-            File destinationParent = destFile.getParentFile();
+            File parent = destFile.getParentFile();
 
-            destinationParent.mkdirs();
+            parent.mkdirs();
 
             if (!entry.isDirectory()){
                 BufferedInputStream is = new BufferedInputStream(zip
                         .getInputStream(entry));
                 int currentByte;
-                // establish buffer for writing file
                 byte data[] = new byte[BUFFER];
-
-                // write the current file to disk
                 FileOutputStream fos = new FileOutputStream(destFile);
                 BufferedOutputStream dest = new BufferedOutputStream(fos,
                         BUFFER);
-
-                // read and write until last byte is encountered
                 while ((currentByte = is.read(data, 0, BUFFER)) != -1) {
                     dest.write(data, 0, currentByte);
                 }
                 dest.flush();
                 dest.close();
                 is.close();
-            }
-            if (currentEntry.endsWith(".zip")){
-                UnZip(destFile.getAbsolutePath());
             }
         }
     }
